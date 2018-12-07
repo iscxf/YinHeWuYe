@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.StaffMapper">
+  <resultMap id="BaseResultMap" type="yh.yhwy.bean.Staff">
+    <result column="stafid" jdbcType="INTEGER" property="stafid" />
+    <result column="stafName" jdbcType="VARCHAR" property="stafName" />
+    <result column="stafSex" jdbcType="VARCHAR" property="stafSex" />
+    <result column="stafAge" jdbcType="INTEGER" property="stafAge" />
+    <result column="part_id" jdbcType="INTEGER" property="partId" />
+  </resultMap>
+  <!-- 指定联合查询 -->
+  <resultMap id="WithDeptResultMap" type="yh.yhwy.bean.Staff">
+    <result column="stafid" jdbcType="INTEGER" property="stafid" />
+    <result column="stafName" jdbcType="VARCHAR" property="stafName" />
+    <result column="stafSex" jdbcType="VARCHAR" property="stafSex" />
+    <result column="stafAge" jdbcType="INTEGER" property="stafAge" />
+    <result column="part_id" jdbcType="INTEGER" property="partId" />
+    <association property="department" javaType="yh.yhwy.bean.Department">
+      <id column="partId" property="partid" />
+      <result column="partName" property="partname" />
+    </association>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    stafid, stafName, stafSex, stafAge, part_id
+  </sql>
+  <!-- 自定义修改适应 -->
+  <sql id="WithDept_Column_List">
+    s.stafid, s.stafName, s.stafSex, s.stafAge, s.part_id ,d.partId ,d.partName
+  </sql>
+  <select id="selectByExampleWithDept"  resultMap="WithDeptResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="WithDept_Column_List" />
+    from staff s left join department d on s.part_id=d.partId
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from staff
+    where stafid = #{stafid,jdbcType=INTEGER}
+</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from staff
+    where stafid = #{stafid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="yh.yhwy.bean.StaffExample">
+    delete from staff
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="yh.yhwy.bean.Staff">
+    insert into staff (stafid, stafName, stafSex, 
+      stafAge, part_id)
+    values (#{stafid,jdbcType=INTEGER}, #{stafName,jdbcType=VARCHAR}, #{stafSex,jdbcType=VARCHAR}, 
+      #{stafAge,jdbcType=INTEGER}, #{partId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="yh.yhwy.bean.Staff">
+    insert into staff
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="stafid != null">
+        stafid,
+      </if>
+      <if test="stafName != null">
+        stafName,
+      </if>
+      <if test="stafSex != null">
+        stafSex,
+      </if>
+      <if test="stafAge != null">
+        stafAge,
+      </if>
+      <if test="partId != null">
+        part_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="stafid != null">
+        #{stafid,jdbcType=INTEGER},
+      </if>
+      <if test="stafName != null">
+        #{stafName,jdbcType=VARCHAR},
+      </if>
+      <if test="stafSex != null">
+        #{stafSex,jdbcType=VARCHAR},
+      </if>
+      <if test="stafAge != null">
+        #{stafAge,jdbcType=INTEGER},
+      </if>
+      <if test="partId != null">
+        #{partId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="yh.yhwy.bean.StaffExample" resultType="java.lang.Long">
+    select count(*) from staff
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update staff
+    <set>
+      <if test="record.stafid != null">
+        stafid = #{record.stafid,jdbcType=INTEGER},
+      </if>
+      <if test="record.stafName != null">
+        stafName = #{record.stafName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stafSex != null">
+        stafSex = #{record.stafSex,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stafAge != null">
+        stafAge = #{record.stafAge,jdbcType=INTEGER},
+      </if>
+      <if test="record.partId != null">
+        part_id = #{record.partId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update staff
+    set stafid = #{record.stafid,jdbcType=INTEGER},
+      stafName = #{record.stafName,jdbcType=VARCHAR},
+      stafSex = #{record.stafSex,jdbcType=VARCHAR},
+      stafAge = #{record.stafAge,jdbcType=INTEGER},
+      part_id = #{record.partId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="yh.yhwy.bean.Staff">
+    update staff
+    <set>
+      <if test="stafName != null">
+        stafName = #{stafName,jdbcType=VARCHAR},
+      </if>
+      <if test="stafSex != null">
+        stafSex = #{stafSex,jdbcType=VARCHAR},
+      </if>
+      <if test="stafAge != null">
+        stafAge = #{stafAge,jdbcType=INTEGER},
+      </if>
+      <if test="partId != null">
+        part_id = #{partId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where stafid = #{stafid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="yh.yhwy.bean.Staff">
+    update staff
+    set stafName = #{stafName,jdbcType=VARCHAR},
+      stafSex = #{stafSex,jdbcType=VARCHAR},
+      stafAge = #{stafAge,jdbcType=INTEGER},
+      part_id = #{partId,jdbcType=INTEGER}
+    where stafid = #{stafid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.IInspectionDao">
+    <!--新增考核信息-->
+    <insert id="inserInspection">
+        insert into
+        inspection(inspid,staf_id,inspText,inspResu,inspDate) values (#{inspid},#{staf_id},#{inspText},#{inspResu},#{inspDate});
+    </insert>
+    <!--通过考核编码删除考核信息-->
+    <delete id="delectInspectionByInspid">
+        delete from inspection where inspid = #{inspid}
+    </delete>
+    <!--通过员工号删除考核信息-->
+    <delete id="delectInspectionByStaf_id">
+        delete from inspection where staf_id = #{staf_id}
+    </delete>
+    <!--更新考核信息-->
+    <update id="updateInspection">
+        update inspection set
+        staf_id=#{staf_id},inspText=#{inspText},inspResu=#{inspResu},inspDate=#{inspDate} where inspid=#{inspid}
+    </update>
+    <!--通过考核编码查询考核信息-->
+    <resultMap id="inspstafdepamap" type="Inspection">
+        <id column="inspid" property="inspid"/>
+        <result column="staf_id" property="staf_id"/>
+        <result column="inspText" property="inspText"/>
+        <result column="inspResu" property="inspResu"/>
+        <result column="inspDate" property="inspDate"/>
+        <association property="staff" javaType="Staff">
+            <id column="stafid" property="stafid"/>
+            <result column="stafName" property="stafName"/>
+            <result column="stafSex" property="stafSex"/>
+            <result column="stafAge" property="stafAge"/>
+            <result column="dapa_id" property="dapa_id"/>
+            <association property="department" javaType="Department">
+                <id column="dapaid" property="dapaid"/>
+                <result column="partName" property="partName"/>
+                <result column="partDuty" property="partDuty"/>
+            </association>
+        </association>
+    </resultMap>
+    <select id="selectInspectionByInspid" resultMap="inspstafdepamap">
+          select inspid,staf_id,stafName,stafSex,stafAge,dapa_id,partName,partDuty,inspText,inspResu,inspDate
+          from inspection,staff,department
+          where inspection.staf_id = staff.stafid
+          and staff.dapa_id = department.partid
+          and  inspid = #{inspid}
+    </select>
+
+    <!--通过员工号查询考核信息-->
+    <select id="selectInspectionByStaf_id" resultMap="inspstafdepamap">
+        select inspid,staf_id,stafName,stafSex,stafAge,dapa_id,partName,partDuty,inspText,inspResu,inspDate
+          from inspection,staff,department
+          where inspection.staf_id = staff.stafid
+          and staff.dapa_id = department.partid
+          and  staf_id = #{staf_id}
+    </select>
+    <!--通过员工名查询考核信息-->
+    <select id="selectInspectionByStafName" resultMap="inspstafdepamap">
+          select inspid,staf_id,stafName,stafSex,stafAge,dapa_id,partName,partDuty,inspText,inspResu,inspDate
+          from inspection,staff,department
+          where inspection.staf_id = staff.stafid
+          and staff.dapa_id = department.partid
+          and  stafName like '%' #{stafName} '%'
+    </select>
+    <!--查询全部考核信息-->
+    <select id="selectAllInspection" resultMap="inspstafdepamap">
+          select inspid,staf_id,stafName,stafSex,stafAge,dapa_id,partName,partDuty,inspText,inspResu,inspDate
+          from inspection,staff,department
+          where inspection.staf_id = staff.stafid
+          and staff.dapa_id = department.partid
+    </select>
+
+</mapper>

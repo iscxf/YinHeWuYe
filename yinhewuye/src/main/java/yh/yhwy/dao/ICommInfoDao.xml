@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.ICommInfoDao">
+    <!-- 查询房产信息 -->
+    <select id="selectHousInfo" resultType="HousProp">
+        select * from housprop
+        <where>
+            <choose>
+                <!-- 按房产号查询 -->
+                <when test="hpid != null and hpid != ''">
+                    and hpid=#{hpid}
+                </when>
+                <!-- 按楼号查询 -->
+                <when test="buil_id > 0">
+                    and buil_id=#{buil_id}
+                </when>
+                <!-- 按单元号查询 -->
+                <when test="unit != null and unit != ''">
+                    and unit=#{unit}
+                </when>
+                <!-- 按门牌号查询 -->
+                <when test="doorplate != null and doorplate != ''">
+                    and doorplate=#{doorplate}
+                </when>
+                <!-- 查询所有 -->
+                <otherwise>
+                    and 1=1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <!-- 增加房产信息 -->
+    <insert id="insertHousInfo">
+        insert into housprop(hpid, buil_id, unit, doorplate)
+        VALUES(#{hpid},#{buil_id},#{unit},#{doorplate})
+    </insert>
+    <!-- 修改房产信息 -->
+    <update id="updateHousInfo">
+        update housprop set hpid=#{hpid},buil_id=#{buil_id},unit=#{unit},doorplate=#{doorplate}
+        where id=#{id}
+        <!--<where>
+            <choose>
+                <when test="id >= 0">
+                    and id=#{id}
+                </when>
+                <when test="hpid != null and hpid != ''">
+                    and hpid=#{hpid}
+                </when>
+                <otherwise>
+                    1=2
+                </otherwise>
+            </choose>
+        </where>-->
+    </update>
+    <!-- 删除房产信息 --> <!-- 以上已测试，可用 -->
+    <delete id="deleteHousInfo">
+        delete from housprop where id=#{xxx}
+    </delete>
+    <!-- 查询住户信息 -->
+    <select id="selectResiInfo" resultType="Resident">
+        select * from resident
+        <where>
+            <choose>
+                <when test="resid > 0">
+                    and resid=#{resid}
+                </when>
+                <when test="hp_id != null and hp_id != ''">
+                    and hp_id=#{hp_id}
+                </when>
+                <when test="resiName != null and resiName != ''">
+                    and resiName like '%' #{resiName} '%'
+                </when>
+                <when test="resiIden != null and resiIden != ''">
+                    and resiIden=#{resiIden}
+                </when>
+                <when test="resiTota > 0">
+                    and resiTota=#{resiTota}
+                </when>
+            </choose>
+        </where>
+    </select>
+    <!-- 增加住户信息 -->
+    <insert id="insertResiInfo">
+        insert into resident(hp_id,resiName,resiIden,resiTota)
+        values(#{hp_id},#{resiName},#{resiIden},#{resiTota})
+    </insert>
+    <!-- 修改住户信息 -->
+    <update id="updateResiInfo">
+        update resident set hp_id=#{hp_id},resiName=#{resiName},resiIden=#{resiIden},resiTota=#{resiTota}
+        where resid=#{resid}
+    </update>
+    <!-- 删除住户信息 -->
+    <delete id="deleteResiInfo">
+        delete from resident where resid=#{xxx}
+    </delete>
+    
+    <!-- 查询楼宇信息-->
+    <select id="selectBuildingInfo" resultType="Building">
+        select * from building
+        <where>
+            <choose>
+                <when test="builid > 0">
+                    and builid=#{builid}
+                </when>
+                <when test="layout != null and layout != ''">
+                    and layout=#{layout}
+                </when>
+                <when test="builComp != null and builComp != ''">
+                    and builComp like '%' #{builComp} '%'
+                </when>
+            </choose>
+        </where>
+    </select>
+    <!-- 增加楼宇信息-->
+    <insert id="insertBuildingInfo">
+        insert into building(layout, builComp, builDate)
+        values(#{layout},#{builComp},#{builDate})
+    </insert>
+    <!-- 修改楼宇信息-->
+    <update id="updateBuildingInfo">
+        update building set layout=#{layout},builComp=#{builComp},builDate=#{builDate}
+        where builid=#{builid}
+    </update>
+    <!-- 删除楼宇信息-->
+    <delete id="deleteBuildingInfo">
+        delete from building where builid=#{xxx}
+    </delete>
+
+    <!-- 根据用户房产号查出房产和住户信息-->
+    <select id="selectResident" resultType="Resident">
+        select resid,hp_id,resiName,resiIden,resiTota
+        from resident where hp_id=#{xxx}
+    </select>
+    <resultMap id="HousPropMap" type="HousProp">
+        <id column="id" property="id"/>
+        <result column="hpid" property="hpid"/>
+        <association property="resident" javaType="Resident"
+                     select="selectResident" column="hpid"/>
+    </resultMap>
+    <select id="selectUserInfoByHpid" resultMap="HousPropMap">
+        select * from housprop where hpid=#{xxx}
+    </select>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.ITraiRecoDao">
+    <!--新增培训记录-->
+    <insert id="inserTraiReco">
+        insert into
+        traireco(traiDate,traiAddr,traiLect,traiDire,traiText,effeAppr)
+        values (#{traiDate},#{traiAddr},#{traiLect},#{traiDire},#{traiText},#{effeAppr});
+    </insert>
+    <!--通过培训表编号删除培训记录-->
+    <delete id="delectTraiRecoByTId">
+        delete from traireco where traiid = #{traiid}
+    </delete>
+    <!-- 删除全部培训记录-->
+    <delete id="delectAllraiReco">
+        delete from traireco
+    </delete>
+    <!--更新培训记录-->
+    <update id="updateTraiReco">
+        update traireco set
+        traiid=#{traiid},traiDate=#{traiDate},traiAddr=#{traiAddr},traiLect=#{traiLect},traiDire=#{traiDire},traiText=#{traiText},effeAppr=#{effeAppr}
+        where traiid = #{traiid}
+    </update>
+    <!--通过培训表编码查询培训记录-->
+    <select id="selectTraiRecoByTId" resultType="TraiReco">
+          select traiid,traiDate,traiAddr,traiLect,traiDire,traiText,effeAppr
+          from traireco
+          where traiid = #{traiid}
+    </select>
+
+    <!--通过培训方向查询培训记录-->
+    <select id="selectTraiRecoByTD" resultType="TraiReco">
+         select traiid,traiDate,traiAddr,traiLect,traiDire,traiText,effeAppr
+          from traireco
+          where traiDire = #{traiDire}
+    </select>
+    <!--通过培训讲师查询培训记录-->
+    <select id="selectTraiRecoByTL" resultType="TraiReco">
+          select traiid,traiDate,traiAddr,traiLect,traiDire,traiText,effeAppr
+          from traireco
+          where traiLect like '%' #{traiLect} '%'
+    </select>
+    <!--查询全部培训记录-->
+    <select id="selectAllTraiReco" resultType="TraiReco">
+          select traiid,traiDate,traiAddr,traiLect,traiDire,traiText,effeAppr
+          from traireco
+    </select>
+
+</mapper>

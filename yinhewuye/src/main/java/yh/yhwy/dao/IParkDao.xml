@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.IParkDao">
+
+    <!--///////////////////////////-->
+    <!--//    停车场管理表操作   //-->
+    <!--//////////////////////////-->
+
+    <!--新增停车场信息-->
+    <insert id="addPark" parameterType="yh.yhwy.bean.Park">
+        insert into park(parkName,parkSqua,parkAddr,parkTota) values (#{parkName},#{parkSqua},#{parkAddr},#{parkTota})
+    </insert>
+    <!--查询所有停车场信息-->
+    <select id="selectAllPark" resultType="Park">
+        select * from park
+    </select>
+    <!-- 根据停车号来查询停车场信息-->
+    <select id="selectParkById" resultType="Park">
+        select * from park where parkid=#{id}
+    </select>
+
+    <!--根据停车场号来修改停车场信息-->
+    <update id="updateParkById" parameterType="Park">
+        update park set parkName=#{parkName},parkSqua=#{parkSqua},parkAddr=#{parkAddr},parkTota=#{parkTota} where parkid=#{parkid}<!--SpotMana 中的id属性-->
+    </update>
+    <!--根据停车号来删除停车场-->
+    <delete id="deleteParkById">
+        delete from park where parkid=#{xxx}<!-- 占位符-->
+    </delete>
+
+    <!--///////////////////////////-->
+    <!--//    停车位管理表操作   //-->
+    <!--//////////////////////////-->
+
+    <!--查询所有停车位信息-->
+
+    <!--<resultMap id="SpotManaUserMapper" type="SpotMana">-->
+        <!--&lt;!&ndash;SpotMana映射属性配置&ndash;&gt;-->
+        <!--<id column="id" property="id" jdbcType="INTEGER"/>-->
+        <!--<result column="spotid" property="spotid" jdbcType="INTEGER"/>-->
+        <!--<result column="park_id" property="park_id" jdbcType="INTEGER"/>-->
+        <!--<result column="isRent" property="isRent" jdbcType="VARCHAR"/>-->
+        <!--<result column="user_id" property="user_id" jdbcType="INTEGER"/>-->
+        <!--<result column="user_name" property="user_name" jdbcType="VARCHAR"/>-->
+        <!--<result column="rentStart" property="rentStart" jdbcType="DATE"/>-->
+        <!--<result column="rentEnd" property="rentEnd"  jdbcType="DATE"/>-->
+        <!--<result column="parkFee" property="parkFee"  jdbcType="DOUBLE"/>-->
+        <!--<result column="isPaid" property="isPaid"  jdbcType="VARCHAR"/>-->
+        <!--&lt;!&ndash;配置映射关联user信息&ndash;&gt;-->
+        <!--<association property="user" column="user_id" javaType="com.yinhe.bean.User">-->
+            <!--<id column="userid" property="userid" jdbcType="INTEGER"/>-->
+            <!--<result column="userName" property="userName" jdbcType="VARCHAR"/>-->
+            <!--<result column="userPass" property="userPass" jdbcType="VARCHAR"/>-->
+            <!--<result column="hp_id" property="hp_id" jdbcType="VARCHAR"/>-->
+            <!--<result column="phonenum" property="phonenum" jdbcType="VARCHAR"/>-->
+            <!--<result column="mail" property="mail" jdbcType="VARCHAR"/>-->
+            <!--<result column="statu" property="statu" jdbcType="VARCHAR"/>-->
+        <!--</association>-->
+    <!--</resultMap>-->
+    <!--<select id = "selectAllSpotMana" resultMap = "SpotManaUserMapper">-->
+<!--&#45;&#45;         select a.*,user.b from spotmana as a left join user as b on a.user_id=b.userid-->
+        <!--select spotmana.*,user.username from spotmana,user where spotmana.user_id=user.userid-->
+    <!--</select>-->
+    <!--查询所有停车位信息-->
+    <select id = "selectAllSpotMana" resultType="SpotMana">
+        select * from spotmana
+    </select>
+
+    <!--查询所有已经出租的停车位信息-->
+    <select id="selectSpotManaIsRent" resultType="SpotMana">
+        select * from spotmana where isRent="0"
+    </select>
+
+    <!--根据停车位号来查询停车位信息-->
+    <select id="selectSpotManaById" resultType="SpotMana">
+          select * from spotmana where spotid=#{spotid}
+    </select>
+
+    <!-- 根据用户id来查询停车位信息-->
+    <select id="selectSpotManaByUserId" resultType="SpotMana">
+        select * from spotmana where user_id=#{user_id}
+    </select>
+
+    <!--根据停车位号来修改停车位-->
+    <update id="updateSpotManaById" parameterType="SpotMana">
+        update spotmana set user_id=#{user_id},user_name=#{user_name},rentStart=#{rentStart},rentEnd=#{rentEnd},parkFee=#{parkFee},isRent=#{isRent} where id=#{id}<!--SpotMana 中的id属性-->
+    </update>
+    <!--根据停车位号来删除停车位-->
+    <delete id="deleteSpotManaById" >
+        delete from spotmana where id=#{xxx}<!-- 占位符-->
+    </delete>
+
+    <!--///////////////////////////////-->
+    <!--//    停车位历史记录表操作   //-->
+    <!--//////////////////////////////-->
+
+    <resultMap id="HistoryUserMapper" type="History">
+    <!--SpotMana映射属性配置-->
+    <id column="histid" property="histid" />
+    <result column="spot_id" property="spot_id" jdbcType="INTEGER"/>
+    <result column="user_id" property="user_id" jdbcType="INTEGER"/>
+    <result column="rentStart" property="rentStart" jdbcType="DATE"/>
+    <result column="rentEnd" property="rentEnd"  jdbcType="DATE"/>
+    <result column="parkFee" property="parkFee"  jdbcType="DOUBLE"/>
+    <!--配置映射关联user信息-->
+    <association property="user" column="user_id" javaType="yh.yhwy.bean.User">
+    <id column="userid" property="userid" jdbcType="INTEGER"/>
+    <result column="userName" property="userName" jdbcType="VARCHAR"/>
+    </association>
+    </resultMap>
+    <!--查询所有停车历史记录信息-->
+    <select id = "selectAllHistory" resultMap="HistoryUserMapper">
+        select history.*,user.userName from history,user where user_id=userid
+    </select>
+    <!--根据停车位号来查询停车位历史记录信息-->
+    <select id = "selectAllHistoryById" resultMap="HistoryUserMapper">
+        select history.*,user.userName from history,user where user_id=userid and spot_id=#{spot_id}
+    </select>
+    <!--根据历史编号来删除停车位相关历史记录-->
+    <delete id="deleteHistoryById" >
+        delete from history where id=#{xxx}<!-- 占位符-->
+    </delete>
+
+</mapper>

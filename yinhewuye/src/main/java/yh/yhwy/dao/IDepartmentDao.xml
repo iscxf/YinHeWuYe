@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.IDepartmentDao">
+    <!--新增部门信息-->
+    <insert id="inserDepartment">
+        insert into
+        department(partid,partName,partDuty) values (#{partid},#{partName},#{partDuty});
+    </insert>
+    <!--通过部门编号删除部门-->
+    <delete id="delectDepartmentByPartid">
+        delete from department where partid = #{partid}
+    </delete>
+    <!--通过部门名称删除部门-->
+    <delete id="delectDepartmentByPartName">
+        delete from department where partName = #{partName}
+    </delete>
+    <!--更新部门信息-->
+    <update id="updateDepartment">
+        update department set
+        partid=#{partid},partName=#{partName},partDuty=#{partDuty} where partid=#{partid}
+    </update>
+    <!--通过部门编号查询部门-->
+    <select id="selectDepartmentByPartid" resultType="Department">
+          select partid,partName,partDuty
+          from department
+          where partid=#{partid}
+    </select>
+
+    <!--通过部门名称查询部门-->
+    <select id="selectDepartmentByPartName" resultType="Department">
+        select partid,partName,partDuty
+          from department
+          where partName like '%' #{partName} '%'
+    </select>
+    <!--查询全部部门信息-->
+    <select id="selectAllDepartment" resultType="Department">
+          select partid,partName,partDuty
+          from department
+    </select>
+
+</mapper>

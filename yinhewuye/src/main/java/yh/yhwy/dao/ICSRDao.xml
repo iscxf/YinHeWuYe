@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.ICSRDao">
+    <!--查询所有信息-->
+    <select id="selectAllCSR" resultType="CompSuggRepa">
+        select * from compsuggrepa where csrType=#{xxx}
+    </select>
+
+    <!--根据类型和用户id查询所有信息-->
+    <select id="selectCSRById" resultType="CompSuggRepa">
+        select * from compsuggrepa where csrType=#{arg0} and user_id=#{arg1}
+    </select>
+
+    <!--新增投诉信息-->
+    <insert id="addComplaint" parameterType="yh.yhwy.bean.CompSuggRepa">
+        insert into compsuggrepa(user_id,csrName,csrType,csrText,csrPhone,csrDate) values (#{user_id},#{csrName},#{csrType},#{csrText},#{csrPhone},#{csrDate})
+    </insert>
+</mapper>

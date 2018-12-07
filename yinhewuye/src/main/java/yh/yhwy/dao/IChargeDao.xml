@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.IChargeDao">
+    <!--根据员工号查员工信息-->
+    <select id="selectStaffById" resultType="Staff">
+        select stafid,stafName from staff where stafid=#{xxx}
+    </select>
+    <resultMap id="chargeMap" type="Charge">
+        <id column="charid" property="charid"/>
+        <result column="hp_id" property="hp_id"/>
+        <result column="staf_id" property="staf_id"/>
+        <association property="staff" javaType="Staff"
+                     select="selectStaffById" column="staf_id"/>
+    </resultMap>
+    <!-- 根据条件查询收费记录 -->
+    <select id="selectChargeInfo" resultMap="chargeMap">
+        select * from charge
+        <where>
+            <choose>
+                <when test="charid > 0">
+                    and charid=#{charid}
+                </when>
+                <when test="hp_id != null and hp_id != ''">
+                    and hp_id=#{hp_id}
+                </when>
+                <!--<when test="unit != null and unit != ''">
+                    and hpid like '_' #{unit} '_'
+                </when>
+                <when test="doorplate != null and doorplate != ''">
+                    and doorplate like '_' '_' #{doorplate}
+                </when>-->
+            </choose>
+        </where>
+    </select>
+    <!--新建收费记录-->
+    <insert id="insertChargeInfo">
+        insert into charge(hp_id, propFree, waeFee, staf_id, CharDate)
+        values(#{hp_id},#{propFree},#{waeFee},#{staf_id},#{CharDate})
+    </insert>
+    <!--修改收费记录-->
+    <update id="updateChargeInfo">
+        update charge set hp_id=#{hp_id},propFree=#{propFree},waeFee=#{waeFee},
+                          staf_id=#{staf_id},CharDate=#{CharDate} where charid=#{charid}
+    </update>
+    <!--删除收费记录-->
+    <delete id="delteChargeInfo">
+        delete from charge where charid=#{xxx}
+    </delete>
+</mapper>

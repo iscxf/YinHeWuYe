@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.DailsecuMapper">
+  <resultMap id="BaseResultMap" type="yh.yhwy.bean.Dailsecu">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="staf_id" jdbcType="INTEGER" property="stafId" />
+    <result column="toolDate" jdbcType="DATE" property="tooldate" />
+    <result column="toolDeta" jdbcType="LONGVARCHAR" property="tooldeta" />
+    <result column="secuDeta" jdbcType="LONGVARCHAR" property="secudeta" />
+  </resultMap>
+  <!--联表-->
+  <resultMap id="WithStafResultMap" type="yh.yhwy.bean.Dailsecu">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="staf_id" jdbcType="INTEGER" property="stafId" />
+    <result column="toolDate" jdbcType="DATE" property="tooldate" />
+    <result column="toolDeta" jdbcType="LONGVARCHAR" property="tooldeta" />
+    <result column="secuDeta" jdbcType="LONGVARCHAR" property="secudeta" />
+    <association property="staff" javaType="yh.yhwy.bean.Staff">
+      <id column="stafid" jdbcType="INTEGER" property="stafid" />
+      <result column="stafName" jdbcType="VARCHAR" property="stafName" />
+      <result column="stafSex" jdbcType="VARCHAR" property="stafSex" />
+      <result column="stafAge" jdbcType="INTEGER" property="stafAge" />
+      <result column="part_id" jdbcType="INTEGER" property="partId" />
+    </association>
+  </resultMap>
+
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="yh.yhwy.bean.DailsecuWithBLOBs">
+
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, staf_id, toolDate, toolDeta, secuDeta
+  </sql>
+  <sql id="WithStaf_Column_List">
+    d.ID, s.stafName, d.toolDate, d.toolDeta, d.secuDeta
+  </sql>
+  <sql id="Blob_Column_List">
+    toolDeta, secuDeta
+  </sql>
+  <select id="selectByExampleWithStaf" resultMap="WithStafResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="WithStaf_Column_List" />
+    from dailsecu d left join staff s on d.staf_id = s.stafid
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExampleWithBLOBs" parameterType="yh.yhwy.bean.DailsecuExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from dailsecu
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="yh.yhwy.bean.DailsecuExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from dailsecu
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKeyWithStaf" parameterType="java.lang.Integer" resultMap="WithStafResultMap">
+    select
+    <include refid="WithStaf_Column_List" />
+    from dailsecu d left join staff s on d.staf_id = s.stafid
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByNameWithStaf" parameterType="java.lang.Integer" resultMap="WithStafResultMap">
+    select
+    <include refid="WithStaf_Column_List" />
+    from dailsecu d left join staff s on d.staf_id = s.stafid
+    where s.stafName = #{stafName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKeyWithStaf" parameterType="java.lang.Integer">
+    delete from dailsecu
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="yh.yhwy.bean.DailsecuExample">
+    delete from dailsecu
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="yh.yhwy.bean.Dailsecu">
+    insert into dailsecu ( staf_id, toolDate,
+      toolDeta, secuDeta)
+    values (#{stafId,jdbcType=INTEGER}, #{tooldate,jdbcType=DATE},
+      #{tooldeta,jdbcType=LONGVARCHAR}, #{secudeta,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="yh.yhwy.bean.DailsecuWithBLOBs">
+    insert into dailsecu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="stafId != null">
+        staf_id,
+      </if>
+      <if test="tooldate != null">
+        toolDate,
+      </if>
+      <if test="tooldeta != null">
+        toolDeta,
+      </if>
+      <if test="secudeta != null">
+        secuDeta,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="stafId != null">
+        #{stafId,jdbcType=INTEGER},
+      </if>
+      <if test="tooldate != null">
+        #{tooldate,jdbcType=DATE},
+      </if>
+      <if test="tooldeta != null">
+        #{tooldeta,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="secudeta != null">
+        #{secudeta,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="yh.yhwy.bean.DailsecuExample" resultType="java.lang.Long">
+    select count(*) from dailsecu
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update dailsecu
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.stafId != null">
+        staf_id = #{record.stafId,jdbcType=INTEGER},
+      </if>
+      <if test="record.tooldate != null">
+        toolDate = #{record.tooldate,jdbcType=DATE},
+      </if>
+      <if test="record.tooldeta != null">
+        toolDeta = #{record.tooldeta,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.secudeta != null">
+        secuDeta = #{record.secudeta,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update dailsecu
+    set ID = #{record.id,jdbcType=INTEGER},
+      staf_id = #{record.stafId,jdbcType=INTEGER},
+      toolDate = #{record.tooldate,jdbcType=DATE},
+      toolDeta = #{record.tooldeta,jdbcType=LONGVARCHAR},
+      secuDeta = #{record.secudeta,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update dailsecu
+    set ID = #{record.id,jdbcType=INTEGER},
+      staf_id = #{record.stafId,jdbcType=INTEGER},
+      toolDate = #{record.tooldate,jdbcType=DATE}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="yh.yhwy.bean.DailsecuWithBLOBs">
+    update dailsecu
+    <set>
+      <if test="stafId != null">
+        staf_id = #{stafId,jdbcType=INTEGER},
+      </if>
+      <if test="tooldate != null">
+        toolDate = #{tooldate,jdbcType=DATE},
+      </if>
+      <if test="tooldeta != null">
+        toolDeta = #{tooldeta,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="secudeta != null">
+        secuDeta = #{secudeta,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithStaf" parameterType="yh.yhwy.bean.Dailsecu">
+    update dailsecu
+    set staf_id = #{stafId,jdbcType=INTEGER},
+      toolDate = #{tooldate,jdbcType=DATE},
+      toolDeta = #{tooldeta,jdbcType=LONGVARCHAR},
+      secuDeta = #{secudeta,jdbcType=LONGVARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="yh.yhwy.bean.DailsecuWithBLOBs">
+    update dailsecu
+    set staf_id = #{stafId,jdbcType=INTEGER},
+    toolDate = #{tooldate,jdbcType=DATE},
+    toolDeta = #{tooldeta,jdbcType=LONGVARCHAR},
+    secuDeta = #{secudeta,jdbcType=LONGVARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="yh.yhwy.bean.Dailsecu">
+    update dailsecu
+    set staf_id = #{stafId,jdbcType=INTEGER},
+      toolDate = #{tooldate,jdbcType=DATE}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

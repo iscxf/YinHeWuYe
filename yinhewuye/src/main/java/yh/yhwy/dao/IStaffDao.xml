@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yh.yhwy.dao.IStaffDao">
+    <!--新增员工信息-->
+    <insert id="inserStaff">
+        insert into
+        staff(stafid,stafName,stafSex,stafAge,dapa_id) values (#{stafid},#{stafName},#{stafSex},#{stafAge},#{dapa_id});
+    </insert>
+    <!--通过员工号删除员工信息-->
+    <delete id="delectStaffByStafid">
+        delete from staff where stafid = #{stafid}
+    </delete>
+    <!--通过员工姓名删除信息-->
+    <delete id="delectStaffByStafName">
+        delete from staff where stafName = #{stafName}
+    </delete>
+
+    <!--更新员工信息-->
+    <update id="updateStaff">
+        update staff set
+        stafid=#{stafid},stafName=#{stafName},stafSex=#{stafSex},stafAge=#{stafAge},dapa_id=#{dapa_id} where stafid=#{stafid}
+    </update>
+
+    <!--通过员工号查询员工信息-->
+    <resultMap id="stafdepamap" type="Staff">
+        <id column="stafid" property="stafid"/>
+        <result column="stafName" property="stafName"/>
+        <result column="stafSex" property="stafSex"/>
+        <result column="stafAge" property="stafAge"/>
+        <result column="dapa_id" property="dapa_id"/>
+        <association property="department" javaType="Department">
+            <id column="dapaid" property="dapaid"/>
+            <result column="partName" property="partName"/>
+            <result column="partDuty" property="partDuty"/>
+        </association>
+    </resultMap>
+    <select id="selectStaffByStafid" resultMap="stafdepamap">
+          select stafid,stafName,stafSex,stafAge,dapa_id,partName,partDuty
+          from staff,department
+          where staff.dapa_id = department.partid
+          and  stafid = #{stafid}
+    </select>
+
+    <!--通过员工姓名查询员工信息-->
+    <select id="selectStaffByStafName" resultMap="stafdepamap">
+       select stafid,stafName,stafSex,stafAge,dapa_id,partName,partDuty
+      from staff,department
+      where staff.dapa_id = department.partid
+      and  stafName like '%' #{stafName} '%'
+    </select>
+
+    <!--通过员工性别查询员工信息-->
+    <select id="selectStaffByStafSex" resultMap="stafdepamap">
+      select stafid,stafName,stafSex,stafAge,dapa_id,partName,partDuty
+      from staff,department
+      where staff.dapa_id = department.partid
+      and  stafSex like '%' #{stafSex} '%'
+    </select>
+
+    <!--通过员工年龄范围查询员工信息-->
+    <select id="selectStaffByStafAge" resultMap="stafdepamap">
+      select stafid,stafName,stafSex,stafAge,dapa_id,partName,partDuty
+      from staff,department
+      where staff.dapa_id = department.partid
+      and stafAge between #{minstafAge} and #{maxstafAge};
+    </select>
+
+    <!--通过部门名称查询员工信息-->
+    <select id="selectStaffByPartName" resultMap="stafdepamap">
+      select stafid,stafName,stafSex,stafAge,dapa_id,partName,partDuty
+      from staff,department
+      where staff.dapa_id = department.partid
+      and  partName like '%' #{partName} '%'
+    </select>
+
+    <!--查询全部考核信息-->
+    <select id="selectAllStaff" resultMap="stafdepamap">
+      select stafid,stafName,stafSex,stafAge,dapa_id,partName,partDuty
+      from staff,department
+      where staff.dapa_id = department.partid
+    </select>
+
+</mapper>
